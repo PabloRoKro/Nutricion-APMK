@@ -42,7 +42,7 @@ def multiplicar_cantidad(alimento, escalar):
         return alimento
     cantidad_str, descripcion = match.groups()
     cantidad = convertir_a_fraccion(cantidad_str)
-    resultado = Fraction(cantidad * escalar)
+    resultado = cantidad * Fraction(str(escalar))  # ← CAMBIO AQUÍ
     nueva_cadena = fraccion_a_string(resultado)
     return f"{nueva_cadena} {descripcion}"
 
@@ -93,7 +93,7 @@ if not st.session_state.autenticado:
             st.error("❌ Usuario o contraseña incorrectos")
 else:
     st.markdown("### ✅ Bienvenida a APMK")
-    texto = st.text_input("Multiplicadores por grupo (ej: 1*2,3*1.5):")
+    texto = st.text_input("Multiplicadores por grupo:")
     grupos = cargar_grupos("grupos.json")
 
     if st.button("Generar plan"):
