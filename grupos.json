@@ -1,0 +1,88 @@
+{
+  "1": {
+    "nombre": "Verdura",
+    "alimentos": [
+      "½ taza de verduras (como guarnición o incluidas en la preparación)",
+      "1 vaso de jugo verde (espinacas, nopal, apio, limón, agua y ½ rebanada de piña)"
+    ]
+  },
+  "2": {
+    "nombre": "Proteína",
+    "alimentos": [
+      "1 huevo entero",
+      "2 claras",
+      "¼ taza de claras líquidas",
+      "⅓ taza de pollo deshebrado",
+      "30 g de carne baja en grasa (pollo/pescado/res)",
+      "½ lata de atún",
+      "½ taza de yogurt griego sin azúcar",
+      "40 g de queso panela/oaxaca light",
+      "3 cucharadas de requesón/cottage",
+      "⅓ medida de suplemento de proteína vegana"
+    ]
+  },
+  "3": {
+    "nombre": "Leche",
+    "alimentos": [
+      "1 taza de leche light",
+      "1 taza de yogurt natural sin azúcar",
+      "1 bote de yogurt bebible natural sin azúcar",
+      "4 cucharadas de jocoque"
+    ]
+  },
+  "4": {
+    "nombre": "Cereales",
+    "alimentos": [
+      "1 tortilla de maíz",
+      "2 tortillas de nopal",
+      "2 tortillas tomatillas",
+      "2 tostadas de maíz horneadas",
+      "1 paquete de salmas",
+      "⅓ taza de arroz integral o quinua cocidos",
+      "½ papa cocida",
+      "⅓ taza de camote cocido",
+      "½ taza de avena en hojuelas",
+      "¼ taza de amaranto",
+      "1 pieza de elote",
+      "½ taza de elote desgranado",
+      "3 tazas de palomitas",
+      "⅓ bolillo sin migajón",
+      "⅔ taza de corn flakes",
+      "⅓ taza de pasta cocida",
+      "1 pieza de pan de caja"
+    ]
+  },
+  "5": {
+    "nombre": "Leguminosa",
+    "alimentos": [
+      "½ taza de frijoles de la olla",
+      "½ taza de lenteja cocida",
+      "½ taza de haba cocida",
+      "½ taza de edamames cocidos",
+      "½ taza de garbanzo cocido",
+      "1 taza de leche de soya",
+      "4 cucharadas de hummus"
+    ]
+  },
+  "6": {
+    "nombre": "Fruta",
+    "alimentos": [
+      "½ pieza de fruta muy dulce (mango, plátano, pera)",
+      "1 pieza de fruta (durazno, manzana, naranja, etc.)",
+      "1 taza de fruta picada o fruta pequeña (uvas, frutos rojos, melón, etc.)"
+    ]
+  },
+  "7": {
+    "nombre": "Grasa",
+    "alimentos": [
+      "1 cucharadita de aceite (aguacate, oliva, canola, girasol)",
+      "¼ aguacate",
+      "1 cucharada de nueces mixtas",
+      "2 cucharadas de pepitas o pistaches",
+      "7 mitades de nuez",
+      "1 cucharadita de crema de cacahuate/almendra sin azúcar",
+      "1 cucharada de crema/mayonesa light",
+      "1 cucharadita de mantequilla"
+    ]
+  }
+}
