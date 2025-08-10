@@ -45,7 +45,7 @@ def multiplicar_cantidad(alimento: str, escalar: float) -> str:
     nueva_cadena = fraccion_a_string(resultado)
     return f"{nueva_cadena} {descripcion}"
 
-def multiplicar_alimentos(lista_alimentos, escalar: float):
+def multiplicar_alimentos(lista_alimentos, escalar: int):
     return [multiplicar_cantidad(alimento, escalar) for alimento in lista_alimentos]
 
 def cargar_grupos(path: str):
@@ -55,8 +55,32 @@ def cargar_grupos(path: str):
 # === UI helpers ===
 TIEMPOS = [("Tiempo 1", "t1"), ("Tiempo 2", "t2"), ("Tiempo 3", "t3")]
 
-def render_fila_tiempo(nombre_visible: str, key_prefix: str, grupos_dict: dict) -> dict:
-    """Una sola fila con N inputs (uno por grupo) -> {id_grupo_str: escalar_float}"""
+def set_fila(prefix: str, grupos_dict: dict, valor: int):
+    for gid in grupos_dict.keys():
+        st.session_state[f"{prefix}_esc_{gid}"] = int(valor)
+
+def copiar_fila(src_prefix: str, dst_prefix: str, grupos_dict: dict):
+    for gid in grupos_dict.keys():
+        st.session_state[f"{dst_prefix}_esc_{gid}"] = int(st.session_state.get(f"{src_prefix}_esc_{gid}", 0))
+
+def render_fila_tiempo_fast_int(nombre_visible: str, key_prefix: str, grupos_dict: dict) -> dict:
+    # Atajos por fila
+    c0, c1, c2, c3, c4 = st.columns([1.4, 1, 1, 1, 1.6])
+    with c0: st.caption(nombre_visible)
+    with c1:
+        if st.button("Todo 0", key=f"{key_prefix}_todo0"):
+            set_fila(key_prefix, grupos_dict, 0); st.rerun()
+    with c2:
+        if st.button("Todo 1", key=f"{key_prefix}_todo1"):
+            set_fila(key_prefix, grupos_dict, 1); st.rerun()
+    with c3:
+        if st.button("Todo 2", key=f"{key_prefix}_todo2"):
+            set_fila(key_prefix, grupos_dict, 2); st.rerun()
+    with c4:
+        if key_prefix != "t1" and st.button("Copiar de Tiempo 1", key=f"{key_prefix}_copiar_t1"):
+            copiar_fila("t1", key_prefix, grupos_dict); st.rerun()
+
+    # 7 inputs en una fila (int, paso 1). Navega rápido con TAB y flechas ↑↓
     ids_ordenados = sorted(grupos_dict.keys(), key=lambda x: int(x))
     cols = st.columns(len(ids_ordenados), gap="small")
     escalares = {}
@@ -65,26 +89,22 @@ def render_fila_tiempo(nombre_visible: str, key_prefix: str, grupos_dict: dict) 
         with col:
             val = st.number_input(
                 label=nombre,
-                min_value=0.0,
-                step=0.25,
-                value=float(st.session_state.get(f"{key_prefix}_esc_{gid}", 0.0)),
-                key=f"{key_prefix}_esc_{gid}",
-                help="0 = no incluir"
+                min_value=0,
+                step=1,
+                value=int(st.session_state.get(f"{key_prefix}_esc_{gid}", 0)),
+                key=f"{key_prefix}_esc_{gid}"
             )
-            escalares[gid] = float(val)
+            escalares[gid] = int(val)
     return escalares
 
 def generar_bloques_por_tiempo(grupos: dict, captura_por_tiempo: dict) -> dict:
-    """
-    Devuelve un dict {Tiempo: [ '• Grupo: item1, item2, ...', ... ]}
-    """
     salida = {}
     for nombre_visible, _prefix in TIEMPOS:
         lineas = []
         escalares = captura_por_tiempo.get(nombre_visible, {})
         for gid in sorted(grupos.keys(), key=lambda x: int(x)):
-            esc = escalares.get(gid, 0.0)
-            if esc and esc > 0:
+            esc = int(escalares.get(gid, 0))
+            if esc > 0:
                 grupo = grupos[gid]
                 nombre = grupo["nombre"]
                 items = multiplicar_alimentos(grupo["alimentos"], esc)
@@ -122,29 +142,28 @@ else:
         st.error("No se encontró 'grupos.json' en el directorio actual.")
         st.stop()
 
-    # --- Botones de acción (Generar / Reiniciar)
+    # Botones Generar / Reiniciar
     c1, c2 = st.columns([1, 1])
     with c1:
         generar_click = st.button("Generar plan", use_container_width=True)
     with c2:
         if st.button("Reiniciar", use_container_width=True):
-            # Poner todos los inputs t1/t2/t3 en 0.0 y recargar
             for k in list(st.session_state.keys()):
                 if k.startswith("t1_esc_") or k.startswith("t2_esc_") or k.startswith("t3_esc_"):
-                    st.session_state[k] = 0.0
+                    st.session_state[k] = 0
             st.rerun()
 
-    # Captura compacta por tiempo (una fila con todos los grupos)
+    # Captura por tiempo (rápida con enteros)
     for nombre_visible, key_prefix in TIEMPOS:
         st.subheader(nombre_visible)
-        _ = render_fila_tiempo(nombre_visible, key_prefix, grupos)
+        _ = render_fila_tiempo_fast_int(nombre_visible, key_prefix, grupos)
 
-    # Generar salida agrupada
+    # Salida agrupada
     if generar_click:
         captura = {
-            "Tiempo 1": {gid: float(st.session_state.get(f"t1_esc_{gid}", 0.0)) for gid in grupos.keys()},
-            "Tiempo 2": {gid: float(st.session_state.get(f"t2_esc_{gid}", 0.0)) for gid in grupos.keys()},
-            "Tiempo 3": {gid: float(st.session_state.get(f"t3_esc_{gid}", 0.0)) for gid in grupos.keys()},
+            "Tiempo 1": {gid: int(st.session_state.get(f"t1_esc_{gid}", 0)) for gid in grupos.keys()},
+            "Tiempo 2": {gid: int(st.session_state.get(f"t2_esc_{gid}", 0)) for gid in grupos.keys()},
+            "Tiempo 3": {gid: int(st.session_state.get(f"t3_esc_{gid}", 0)) for gid in grupos.keys()},
         }
         bloques = generar_bloques_por_tiempo(grupos, captura)
 
@@ -157,4 +176,4 @@ else:
                     st.markdown(f"**{nombre_tiempo}**")
                     for linea in bloques[nombre_tiempo]:
                         st.write(linea)
-                    st.markdown("")  # espacio entre bloques
+                    st.markdown("")
